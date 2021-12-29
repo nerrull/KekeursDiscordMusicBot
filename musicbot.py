@@ -515,6 +515,13 @@ class Music(commands.Cog):
     async def sel_(self, ctx):
         if (bot.get_user(user_id) == 7519):
             await ctx.send(''':salty:''')
+            
+    @client.event
+    async def on_message(message):
+        if message.author == client.user:
+            return
+        if message.content.startswith('$WhoAmI'):
+            await message.channel.send('You are {}'.format(message.author.name))
       
 
 def setup(bot):
