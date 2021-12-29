@@ -514,9 +514,8 @@ class Music(commands.Cog):
     @commands.command(name='sel')
     async def sel_(self, ctx):
         if (after.name == Mathieu):
-        await ctx.send(''':salty:''')
-        else:
-            break
+            await ctx.send(''':salty:''')
+      
 
 def setup(bot):
     bot.add_cog(Music(bot))
