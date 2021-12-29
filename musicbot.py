@@ -506,6 +506,11 @@ class Music(commands.Cog):
        
         """
         await ctx.send(tonymessage)
+     
+    @commands.command(name='tony2')
+    async def kek_(self, ctx):
+        await ctx.send(''':salty:''')
+        
 
 def setup(bot):
     bot.add_cog(Music(bot))
