@@ -513,7 +513,7 @@ class Music(commands.Cog):
     
     @commands.command(name='sel')
     async def sel_(self, ctx):
-        if (after.name == Mathieu):
+        if (bot.get_user(user_id) == 7519):
             await ctx.send(''':salty:''')
       
 
