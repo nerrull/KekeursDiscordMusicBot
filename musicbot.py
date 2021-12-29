@@ -510,7 +510,13 @@ class Music(commands.Cog):
     @commands.command(name='tony2')
     async def kek_(self, ctx):
         await ctx.send(''':salty:''')
-        
+    
+    @commands.command(name='sel')
+    async def sel_(self, ctx):
+        if (after.name == Mathieu):
+        await ctx.send(''':salty:''')
+        else:
+            break
 
 def setup(bot):
     bot.add_cog(Music(bot))
