@@ -515,7 +515,8 @@ class Music(commands.Cog):
     async def sel_(self, ctx):
         if (bot.get_user(user_id) == 7519):
             await ctx.send(''':salty:''')
-            
+    
+    client = discord.Client()
     @client.event
     async def on_message(message):
         if message.author == client.user:
