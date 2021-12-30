@@ -39,6 +39,8 @@ Anthony Stolarz (Goaler d'Anaheim): 0,950M // Backup de John Gibson, mais a 2 sh
 
 load_dotenv()
 
+tonySel = True
+
 # Get the API token from the .env file.
 DISCORD_TOKEN = os.getenv("discord_token")
 
@@ -56,10 +58,9 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     print(message.author.id)
-    if (message.author.id == 175989268609499136):
+    if (message.author.id == 175989268609499136 and tonySel == True):
         await message.add_reaction("🧂")
-
-
+        
 
 # Suppress noise about console usage from errors
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -528,8 +529,10 @@ class Music(commands.Cog):
     
     @commands.command(name='sel')
     async def sel_(self, ctx):
-        if (bot.get_user(user_id) == 7519):
-            await ctx.send(''':salty:''')
+        if (tonySel == True):
+            tonySel == False
+        if (tonySel == False)
+            tonySel == True
     
     client = discord.Client()
     @client.event
