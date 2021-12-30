@@ -534,17 +534,7 @@ class Music(commands.Cog):
     async def on_message(self, message):
         print(message.author.id)
         if (message.author.id == 175989268609499136 and tonySel == True):
-            await message.add_reaction("🧂")
-    
-    
-    client = discord.Client()
-    @client.event
-    async def on_message(message):
-        if message.author == client.user:
-            return
-        if message.content.startswith('$WhoAmI'):
-            await message.channel.send('You are {}'.format(message.author.name))
-      
+            await message.add_reaction("🧂")  
 
 def setup(bot):
     bot.add_cog(Music(bot))
