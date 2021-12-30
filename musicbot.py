@@ -53,11 +53,7 @@ async def on_ready():
     print("ready")
 
 
-@bot.event
-async def on_message(message):
-    print(message.author.id)
-    if (message.author.id == 175989268609499136 and tonySel == True):
-        await message.add_reaction("🧂")
+
         
 
 # Suppress noise about console usage from errors
@@ -533,6 +529,13 @@ class Music(commands.Cog):
             self.tonySel = False
         elif (self.tonySel == False):
             self.tonySel = True
+    
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        print(message.author.id)
+        if (message.author.id == 175989268609499136 and tonySel == True):
+            await message.add_reaction("🧂")
+    
     
     client = discord.Client()
     @client.event
