@@ -533,7 +533,7 @@ class Music(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         print(message.author.id)
-        if (message.author.id == 175989268609499136 and self.tonySel == True):
+        if (message.author.id == 172835127016030208 and self.tonySel == True):
             await message.add_reaction("🧂")  
 
 def setup(bot):
