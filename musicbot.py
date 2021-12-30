@@ -46,6 +46,21 @@ intents = discord.Intents().all()
 client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='!',intents=intents)
 
+#Aknowlege initialise and KEK THE TONY
+
+@bot.event
+async def on_ready():
+    print("ready")
+
+
+@bot.event
+async def on_message(message):
+    print(message.author.id)
+    if (message.author.id == 925842131581542420):
+        await message.add_reaction("🧂")
+
+
+
 # Suppress noise about console usage from errors
 youtube_dl.utils.bug_reports_message = lambda: ''
 
