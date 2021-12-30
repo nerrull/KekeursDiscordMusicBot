@@ -524,7 +524,7 @@ class Music(commands.Cog):
     
     tonySel = False
     @commands.command(name='sel')
-    async def sel_(self):
+    async def sel_(self, ctx):
         if (self.tonySel == True):
             self.tonySel = False
         elif (self.tonySel == False):
