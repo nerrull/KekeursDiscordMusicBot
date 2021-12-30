@@ -56,7 +56,6 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     print(message.author.id)
-    print(tonySel)
     if (message.author.id == 175989268609499136 and tonySel == True):
         await message.add_reaction("🧂")
         
