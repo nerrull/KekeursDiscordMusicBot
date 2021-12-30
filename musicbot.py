@@ -39,7 +39,7 @@ Anthony Stolarz (Goaler d'Anaheim): 0,950M // Backup de John Gibson, mais a 2 sh
 
 load_dotenv()
 
-tonySel = Null
+tonySel = True
 
 # Get the API token from the .env file.
 DISCORD_TOKEN = os.getenv("discord_token")
@@ -531,9 +531,9 @@ class Music(commands.Cog):
     @commands.command(name='sel')
     async def sel_(self, ctx):
         if (tonySel == True):
-            tonySel == False
+            tonySel = False
         elif (tonySel == False):
-            tonySel == True
+            tonySel = True
     
     client = discord.Client()
     @client.event
