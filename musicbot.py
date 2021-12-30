@@ -39,7 +39,7 @@ Anthony Stolarz (Goaler d'Anaheim): 0,950M // Backup de John Gibson, mais a 2 sh
 
 load_dotenv()
 
-tonySel = True
+tonySel = False
 
 # Get the API token from the .env file.
 DISCORD_TOKEN = os.getenv("discord_token")
