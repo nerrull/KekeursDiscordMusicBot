@@ -56,7 +56,7 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     print(message.author.id)
-    if (message.author.id == 925842131581542420):
+    if (message.author.id == 175989268609499136):
         await message.add_reaction("🧂")
 
 
