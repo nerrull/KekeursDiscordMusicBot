@@ -531,7 +531,7 @@ class Music(commands.Cog):
     async def sel_(self, ctx):
         if (tonySel == True):
             tonySel == False
-        if (tonySel == False):
+        elif (tonySel == False):
             tonySel == True
     
     client = discord.Client()
