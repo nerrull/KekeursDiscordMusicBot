@@ -39,7 +39,7 @@ Anthony Stolarz (Goaler d'Anaheim): 0,950M // Backup de John Gibson, mais a 2 sh
 
 load_dotenv()
 
-tonySel = True
+tonySel = True 
 
 # Get the API token from the .env file.
 DISCORD_TOKEN = os.getenv("discord_token")
@@ -58,6 +58,7 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     print(message.author.id)
+    print(tonySel)
     if (message.author.id == 175989268609499136 and tonySel == True):
         await message.add_reaction("🧂")
         
