@@ -527,7 +527,7 @@ class Music(commands.Cog):
         await ctx.send(''':salty:''')
     
     
-tonySel = False
+    tonySel = False
     @commands.command(name='sel')
     async def sel_(self):
         if (self.tonySel == True):
