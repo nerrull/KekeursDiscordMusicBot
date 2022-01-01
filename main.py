@@ -14,14 +14,14 @@ load_dotenv()
 
 # Get the API token from the .env file.
 DISCORD_TOKEN = os.getenv("discord_token")
-
+DEV_PREFIX = os.getenv("dev_prefix")
 
 if __name__ == "__main__" :
     
     intents = discord.Intents().all()
     client = discord.Client(intents=intents)
 
-    bot = commands.Bot(command_prefix=[MusicCog.MUSIC_COMMAND_SYMBOL, RichCog.COMMAND_SYMBOL, BoissiCog.COMMAND_SYMBOL, LussiCog.COMMAND_SYMBOL],intents=intents)
+    bot = commands.Bot(command_prefix=[DEV_PREFIX],intents=intents)
     bot.add_cog(MusicCog(bot))
     bot.add_cog(RichCog(bot))
     bot.add_cog(LussiCog(bot))
