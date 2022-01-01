@@ -1,7 +1,7 @@
 import discord
 
 from musicbot import MusicCog
-from EtiCog import EtiCog
+from eticog import EtiCog
 from LussiCog import LussiCog
 from BoissiCog import BoissiCog
 from dotenv import load_dotenv
