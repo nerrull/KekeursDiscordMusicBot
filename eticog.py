@@ -1,16 +1,9 @@
 import discord
 from discord.ext import commands
-
 from async_timeout import timeout
 from functools import partial
 
-import discord
-from discord.ext import commands,tasks
-import os
-from dotenv import load_dotenv
-import youtube_dl
 import db
-import asyncio
 
 tonymessage = '''
 Voici mes joueurs sur le marché des échanges. Je suis principalement intéressé par un goaler, mais toute offre raisonnable sera acceptée:
@@ -32,8 +25,8 @@ Devon Toews (Défenseur du Colorado): 4,100M // 20pts en 16 games, dans l'ombre 
 Anthony Stolarz (Goaler d'Anaheim): 0,950M // Backup de John Gibson, mais a 2 shutouts en 10 games pis des pas pires stats
 '''
 
-class KekCog(commands.Cog):
-    KEK_COMMAND_SYMBOL = "~"
+class EtiCog(commands.Cog):
+    COMMAND_SYMBOL = "~"
     CUSTOM_COMMAND_SYMBOL = "~!"
 
     def __init__(self, bot):
@@ -41,7 +34,11 @@ class KekCog(commands.Cog):
         self.database = db.BotDB()
 
     def cog_check(self, ctx) :
-        return ctx.prefix == self.KEK_COMMAND_SYMBOL
+        return ctx.prefix == self.COMMAND_SYMBOL
+
+    @commands.command(name='helloE', description="")
+    async def hello_(self, ctx):
+        await ctx.send("Hello from EtiCog")
 
     @commands.command(name='list', description="list users")
     async def summon_(self, ctx, *, channel: discord.VoiceChannel=None):
