@@ -11,11 +11,8 @@ import youtube_dl
 from youtube_dl import YoutubeDL
 
 
-#Aknowlege initialise and KEK THE TONY
-
-
-
-
+#PARAMS
+TIMEOUT_SEC = 6000 # 1 hour
         
 
 # Suppress noise about console usage from errors
@@ -138,7 +135,7 @@ class MusicPlayer:
 
             try:
                 # Wait for the next song. If we timeout cancel the player and disconnect...
-                async with timeout(300):  # 5 minutes...
+                async with timeout(TIMEOUT_SEC):
                     source = await self.queue.get()
             except asyncio.TimeoutError:
                 return self.destroy(self._guild)
