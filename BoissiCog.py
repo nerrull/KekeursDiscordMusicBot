@@ -15,3 +15,7 @@ class BoissiCog(commands.Cog):
     @commands.command(name='helloB', description="")
     async def hello_(self, ctx):
         await ctx.send("Hello from BoissiCog")
+
+    @commands.command(name='keko', description="")
+    async def hello_(self, ctx):
+        await ctx.send("keko")
