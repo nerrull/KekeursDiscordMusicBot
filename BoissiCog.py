@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 
 
-
 class BoissiCog(commands.Cog):
     COMMAND_SYMBOL = "$"
 
