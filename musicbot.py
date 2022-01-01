@@ -10,47 +10,9 @@ from functools import partial
 import youtube_dl
 from youtube_dl import YoutubeDL
 
-import discord
-from discord.ext import commands,tasks
-import os
-from dotenv import load_dotenv
-import youtube_dl
-
-
-tonymessage = '''
-Voici mes joueurs sur le marché des échanges. Je suis principalement intéressé par un goaler, mais toute offre raisonnable sera acceptée:
-
-Evgeny Kuznetsov (Attaquant des Capitals): 7,200M // 30 pts en 28 games, joue sur la ligne d'Ovy
-
-Nicklas Backstrom (Attaquant des Capitals): 9,200M // revient d'une blessure et n'a joué qu'un match (1A 1PPP 5SOG 2Hit)
-
-Chandler Stephenson (Attaquant de Vegas): 2,750M // 11pts dans ses 10 dernières games, 4PPP. Lent début de saison mais il se réchauffe
-
-Ivan Barbashev (Attaquant des Blues) 2,250M // Poor man's Tarasenko, mais a 12pts à ses 10 dernières games
-
-
-Shea Theodore (Défenseur de Vegas): 5,200M // 11pts à ses 10 dernières games, 5PPP. Surement l'offre la plus alléchante de la gang
-
-Devon Toews (Défenseur du Colorado): 4,100M // 20pts en 16 games, dans l'ombre de Cale Makar, mais il produit autant
-
-
-Anthony Stolarz (Goaler d'Anaheim): 0,950M // Backup de John Gibson, mais a 2 shutouts en 10 games pis des pas pires stats
-'''
-
-load_dotenv()
-
-# Get the API token from the .env file.
-DISCORD_TOKEN = os.getenv("discord_token")
-
-intents = discord.Intents().all()
-client = discord.Client(intents=intents)
-bot = commands.Bot(command_prefix='!',intents=intents)
 
 #Aknowlege initialise and KEK THE TONY
 
-@bot.event
-async def on_ready():
-    print("ready")
 
 
 
@@ -90,6 +52,7 @@ class InvalidVoiceChannel(VoiceConnectionError):
 
 
 class YTDLSource(discord.PCMVolumeTransformer):
+    
 
     def __init__(self, source, *, data, requester):
         super().__init__(source)
@@ -207,14 +170,19 @@ class MusicPlayer:
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
 
-class Music(commands.Cog):
+class MusicCog(commands.Cog):
     """Music related commands."""
+    MUSIC_COMMAND_SYMBOL = "!"
 
     __slots__ = ('bot', 'players')
 
     def __init__(self, bot):
         self.bot = bot
         self.players = {}
+
+    def cog_check(self, ctx) :
+        return ctx.prefix == self.MUSIC_COMMAND_SYMBOL
+
 
     async def cleanup(self, guild):
         try:
@@ -508,14 +476,6 @@ class Music(commands.Cog):
         await ctx.send('**Successfully disconnected**')
 
         await self.cleanup(ctx.guild)
-
-
-    @commands.command(name='tony')
-    async def tony_(self, ctx):
-        """
-       
-        """
-        await ctx.send(tonymessage)
      
     @commands.command(name='tony2')
     async def kek_(self, ctx):
@@ -536,10 +496,5 @@ class Music(commands.Cog):
         if (message.author.id == 172835127016030208 and self.tonySel == True):
             await message.add_reaction("🧂")  
 
-def setup(bot):
-    bot.add_cog(Music(bot))
 
 
-if __name__ == "__main__" :
-    setup(bot)
-    bot.run(DISCORD_TOKEN)
