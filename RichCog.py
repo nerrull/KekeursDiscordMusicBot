@@ -25,7 +25,7 @@ Devon Toews (Défenseur du Colorado): 4,100M // 20pts en 16 games, dans l'ombre 
 Anthony Stolarz (Goaler d'Anaheim): 0,950M // Backup de John Gibson, mais a 2 shutouts en 10 games pis des pas pires stats
 '''
 
-class EtiCog(commands.Cog):
+class RichCog(commands.Cog):
     COMMAND_SYMBOL = "~"
     CUSTOM_COMMAND_SYMBOL = "~!"
 
