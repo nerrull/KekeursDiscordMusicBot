@@ -114,5 +114,5 @@ class StingerPlayer :
     async def play_sting(self, sting_file):
         self.over.clear()
         await self.bot.wait_until_ready()
-        self._guild.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=sting_file), after=lambda _: self.bot.loop.call_soon_threadsafe(self.over.set))
-        self.over.wait()
+        self._guild.voice_client.play(discord.FFmpegPCMAudio(source=sting_file), after=lambda _: self.bot.loop.call_soon_threadsafe(self.over.set))
+        await self.over.wait()
