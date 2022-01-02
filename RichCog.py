@@ -5,12 +5,12 @@ from async_timeout import timeout
 from functools import partial
 
 from UserData import NameID, StingerMap
-from main import DEV_PREFIX
 import asyncio
 
 import db
 import os 
 dir_path = os.path.dirname(os.path.realpath(__file__))
+DEV_PREFIX = os.getenv("dev_prefix")
 
 tonymessage = '''
 Voici mes joueurs sur le marché des échanges. Je suis principalement intéressé par un goaler, mais toute offre raisonnable sera acceptée:
