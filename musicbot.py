@@ -169,17 +169,12 @@ class MusicPlayer:
 
 class MusicCog(commands.Cog):
     """Music related commands."""
-    MUSIC_COMMAND_SYMBOL = "!"
 
     __slots__ = ('bot', 'players')
 
     def __init__(self, bot):
         self.bot = bot
         self.players = {}
-
-    def cog_check(self, ctx) :
-        return ctx.prefix == self.MUSIC_COMMAND_SYMBOL
-
 
     async def cleanup(self, guild):
         try:
