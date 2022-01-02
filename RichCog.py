@@ -10,7 +10,6 @@ import asyncio
 import db
 import os 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-DEV_PREFIX = os.getenv("dev_prefix")
 
 tonymessage = '''
 Voici mes joueurs sur le marché des échanges. Je suis principalement intéressé par un goaler, mais toute offre raisonnable sera acceptée:
@@ -38,6 +37,8 @@ class RichCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.database = db.BotDB()
+        self.DEV_PREFIX = os.getenv("dev_prefix")
+
 
     @commands.command(name='helloE', description="")
     async def hello_(self, ctx):
@@ -50,7 +51,7 @@ class RichCog(commands.Cog):
 
     @commands.command(name='addcomm', description="add command")
     async def addcomm_(self, ctx):
-            parts = ctx.message.content.strip( DEV_PREFIX + "addcomm").split("|")
+            parts = ctx.message.content.strip( self.DEV_PREFIX + "addcomm").split("|")
             if (len(parts) == 2 ):
                 self.database.add_command(parts[0].strip(" "), parts[1])
             
