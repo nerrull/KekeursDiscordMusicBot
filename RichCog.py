@@ -37,6 +37,7 @@ class RichCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.database = db.BotDB()
+
     @commands.command(name='helloE', description="")
     async def hello_(self, ctx):
         await ctx.send("Hello from EtiCog")
@@ -83,8 +84,12 @@ class RichCog(commands.Cog):
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         if before.channel == None and  after.channel!= None:
-            player = StingerPlayer(self.bot, after.channel.guild)
-            await player.play_sting(player.get_stinger_file(member))
+            try :
+                player = StingerPlayer(self.bot, after.channel.guild)
+                id = NameID(member.id)
+                await player.play_sting(player.get_stinger_file(id))
+            except:
+                return
 
     # @commands.command(name='sting_test')
     # async def sting_test_(self, ctx):
@@ -93,22 +98,24 @@ class RichCog(commands.Cog):
 
     @commands.command(name='sting_test')
     async def sting_test_(self, ctx):
-        id = NameID(int(ctx.message.content.split[" "][-1]))
-        if (id in StingerMap.keys):
-            player = StingerPlayer(self.bot, ctx.channel.guild)
-            await player.play_sting(id)
+        try :
+            id = NameID(int(ctx.message.content.split(" ")[-1]))
+            if (id in StingerMap.keys()):
+                player = StingerPlayer(self.bot, ctx.channel.guild)
+                await player.play_sting(player.get_stinger_file(id))
+        except:
+            return
 
 class StingerPlayer :
-    __slots__ = ('bot', '_guild', '_channel', '_cog', 'queue', 'over', 'current', 'np', 'volume')
-
+    __slots__ = ('bot', '_guild', '_channel', 'over')
 
     def __init__(self, bot, guild):
         self.bot = bot
         self._guild = guild
         self.over = asyncio.Event()
 
-    def get_stinger_file(self, member):
-         file_path = os.path.join(dir_path, "stingers", StingerMap[NameID(member.id)])
+    def get_stinger_file(self, id):
+         file_path = os.path.join(dir_path, "stingers", StingerMap[id])
          return file_path
 
     async def play_sting(self, sting_file):
