@@ -5,6 +5,7 @@ from async_timeout import timeout
 from functools import partial
 
 from UserData import NameID, StingerMap
+from main import DEV_PREFIX
 import asyncio
 
 import db
@@ -49,7 +50,7 @@ class RichCog(commands.Cog):
 
     @commands.command(name='addcomm', description="add command")
     async def addcomm_(self, ctx):
-            parts = ctx.message.content.strip("~addcomm").split("|")
+            parts = ctx.message.content.strip( DEV_PREFIX + "addcomm").split("|")
             if (len(parts) == 2 ):
                 self.database.add_command(parts[0].strip(" "), parts[1])
             
@@ -101,7 +102,7 @@ class RichCog(commands.Cog):
         try :
             id = NameID(int(ctx.message.content.split(" ")[-1]))
             if (id in StingerMap.keys()):
-                player = StingerPlayer(self.bot, ctx.channel.guild)
+                player = StingerPlayer(self.bot, ctx.channel.guild) 
                 await player.play_sting(player.get_stinger_file(id))
         except:
             return
