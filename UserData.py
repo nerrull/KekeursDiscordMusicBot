@@ -19,5 +19,5 @@ StingerMap = {
     NameID.Math : "Math.m4a",
     NameID.Gab : "Gab.m4a",
     NameID.Oli : "Oli.m4a",
-
+    NameID.Vince : "Vince.m4a",
 }
