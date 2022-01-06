@@ -5,20 +5,34 @@ import asyncio
 import os
 import random as rand
 import sqlite3 as db
-from enum import Enum, auto
+import requests as req
+import json
+
+KEK_SWITCH = True
+DEV_PREFIX = "$"
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+#GB API
+GB_KEY = "c9e27565a39842757c0797c900b06c5e4916c042"
+GB_SRCH_URL = "https://www.giantbomb.com/api/search/?api_key=%s" % GB_KEY
+GB_GAME_URL = "https://www.giantbomb.com/api/game/[guid]/?api_key=%s" % GB_KEY
 
 #MESSAGES
 NOS_OPTIONS = "Voici nos options:"
 PAS_OPTIONS = "On a pas d'options!"
+TIMEOUT_MSG = "Ah pis laisse faire..."
+
+#ERROR MESSAGES
 ERR_GENERIC = "Oops! Ç'a pas marché!"
+ERR_OOB_VALUE = "C'est pas compliqué! Un chiffre en 1 pis 10! Come on!"
 
 #HELP MESSAGES
 HELP_ADDGAME = "Usage: !addgame [Game Name] [Max. Players]"
 
 #PATHS
-PIZZA_IMG = os.path.abspath("res/pizza/img/")
-PIZZA_SND = os.path.abspath("res/pizza/snd/")
-DB = "res/bot.db"
+PIZZA_IMG = dir_path + "/res/pizza/img/"
+PIZZA_SND = dir_path + "/res/pizza/snd/"
+DB = dir_path + "/res/bot.db"
 
 class BoissiCog(commands.Cog):
     
@@ -47,18 +61,20 @@ class BoissiCog(commands.Cog):
             parts = arg.split(" ")
             l = len(parts)
             maxp = parts.pop(l-1)
-            name = ' '.join(parts)
+            srch = ' '.join(parts)
 
-            if maxp and name:
-                con = db.connect(DB)
-                cur = con.cursor()
-                cur.execute("CREATE TABLE IF NOT EXISTS Games (name text, max_players integer)")
-                cur.execute("INSERT INTO Games VALUES (?,?)", (name, maxp))
-                con.commit()
-                con.close()
-                await ctx.send("'%s' was added to the game list" % name)
-            else:
-                await ctx.send(HELP_ADDGAME)
+            params={
+                ('field_list', 'id,guid,name,image,deck,genres,platforms,site_detail_url'),
+                ('format', 'json')
+            }
+            guid = await self.find_game(ctx, srch)
+            r = req.get(GB_GAME_URL.replace('[guid]', guid), params=params, headers={'User-Agent': 'MyDiscordApp'})
+            data = r.json()['results']
+            game = Game(data, maxp)
+            await game.write()
+            await ctx.send("%s was added to the game list." % data['name'])
+            await ctx.send(embed=game.embed())
+
         except:
             await ctx.send(HELP_ADDGAME)
 
@@ -71,14 +87,68 @@ class BoissiCog(commands.Cog):
                 q = cur.execute("SELECT * FROM Games WHERE max_players >= ?", (numpl,)).fetchall()
             else:
                 q = cur.execute("SELECT * FROM Games").fetchall()
+            self.games = []
             await ctx.send(NOS_OPTIONS)
             if q:
-                i = 0
                 for game in q:
-                    i += 1
-                    await ctx.send("%i. %s pour %i kekeurs" % (i, game[0], game[1]))
+                    data = {
+                        'id': game[0],
+                        'guid': game[1],
+                        'name': game[2],
+                        'image': json.loads(game[3]),
+                        'deck': game[4], # desc in Obj
+                        'genres': json.loads(game[5]),
+                        'platforms': json.loads(game[6]),
+                        'site_detail_url': game[7] # link in Obj
+                    }
+                    maxp = game[8]
+                    self.games.append(Game(data, maxp))
+                for game in self.games:
+                    await ctx.send(embed=game.embed())
             else:
                 await ctx.send(PAS_OPTIONS)
+        except:
+            await ctx.send(ERR_GENERIC)
+
+    async def find_game(self, ctx, srch):
+        try:
+            params = [
+                ('query', srch),
+                ('resources', 'game'),
+                ('field_list', 'name,guid'),
+                ('format', 'json')
+            ]
+            r = req.get(GB_SRCH_URL, params=params, headers={'User-Agent': 'MyDiscordApp'})
+            data = r.json()
+            i = 0
+            msg = "Multiple results. Choose one:\n"
+            for game in data['results']:
+                i += 1
+                msg += "%i. %s\n" % (i, game['name'])
+            await ctx.send(msg)
+
+            def check(m):
+                return m.author == ctx.author and m.content.isdigit()
+
+            try:
+                ans = await self.bot.wait_for('message', timeout=30, check=check) # Wait for answer
+                num = int(ans.content)
+                if num > 0 and num <= 10:
+                    await ctx.send("You chose %i: %s" % (num, data['results'][num-1]['name']))
+                    gameid = data['results'][num-1]['guid']
+                    return gameid
+                else:
+                    raise ValueError
+
+            except asyncio.TimeoutError:
+                await ctx.send(TIMEOUT_MSG)
+
+            except ValueError:
+                await ctx.send(ERR_OOB_VALUE)
+
+            except:
+                await ctx.send(ERR_GENERIC)
+
         except:
             await ctx.send(ERR_GENERIC)
 
@@ -97,3 +167,60 @@ class AudioPlayer :
         self._guild.voice_client.play(discord.FFmpegPCMAudio(source=file), after=lambda _: self.bot.loop.call_soon_threadsafe(self.over.set))
         await self.over.wait()
 
+
+class Game :
+    
+    def __init__(self, data, maxp):
+        self.maxp = maxp
+        self.id = data['id'] # Used as primary key in db
+        self.guid = data['guid'] # Used for querying single game
+        self.name = data['name']
+        self.image = data['image']
+        self.desc = data['deck']
+        self.genres = data['genres']
+        self.platforms = data['platforms']
+        self.link = data['site_detail_url']
+
+    async def write(self):
+        con = db.connect(DB)
+        cur = con.cursor()
+        cur.execute('''CREATE TABLE IF NOT EXISTS Games(
+            id INTEGER PRIMARY KEY,
+            guid STRING,
+            name STRING,
+            image STRING,
+            desc STRING,
+            genres STRING,
+            platforms STRING,
+            link STRING,
+            max_players INTEGER)
+            ''')
+        cur.execute("REPLACE INTO Games VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+            self.id,
+            self.guid,
+            self.name,
+            json.dumps(self.image),
+            self.desc,
+            json.dumps(self.genres),
+            json.dumps(self.platforms),
+            self.link,
+            self.maxp
+            ])
+        con.commit()
+        con.close()
+
+    def embed(self):
+        embed = discord.Embed(
+            title = self.name,
+            color = 0xff8000,
+            description = "*%s*" % self.desc,
+            url = self.link)
+        embed.set_image(url=self.image['small_url'])
+        embed.add_field(name='Kekeurs', value=self.maxp)
+        s = ""
+        for genre in self.genres:
+            s += "%s\n" % genre['name']
+        embed.add_field(name='Genre', value=s)
+        embed.set_footer(text="Merci à Giant Bomb pour l'API")
+        return embed
+        
