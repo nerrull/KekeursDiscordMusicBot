@@ -75,16 +75,19 @@ class RichCog(commands.Cog):
     async def on_voice_state_update(self, member, before, after):
         stinger_file = None
         id = NameID(member.id)
-
+        guild= None
         if before.channel == None and after.channel!= None:
             stinger_file = self.get_enter_stinger_file(id)
+            guild =after.channel.guild
 
         elif before.channel != None and after.channel == None :
             stinger_file = self.get_exit_stinger_file(id)
+            guild =before.channel.guild
+
 
         if (stinger_file != None):
             try :
-                player = StingerPlayer(self.bot, after.channel.guild)
+                player = StingerPlayer(self.bot, guild)
                 await player.play_sting(stinger_file)
             except Exception as ex:
                 print(ex)
