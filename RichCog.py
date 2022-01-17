@@ -4,9 +4,10 @@ from discord.ext import commands
 from async_timeout import timeout
 from functools import partial
 import random
-from UserData import NameID, StingerMap
+from UserData import NameID, StingerFolderMap
 import asyncio
 from db.lines import tonymessage, mladies
+from utilities import get_rand_file
 from database import BotDB
 import os 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -72,28 +73,56 @@ class RichCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        if before.channel == None and  after.channel!= None:
+        stinger_file = None
+        id = NameID(member.id)
+
+        if before.channel == None and after.channel!= None:
+            stinger_file = self.get_enter_stinger_file(id)
+
+        elif before.channel != None and after.channel == None :
+            stinger_file = self.get_exit_stinger_file(id)
+
+        if (stinger_file != None):
             try :
                 player = StingerPlayer(self.bot, after.channel.guild)
-                id = NameID(member.id)
-                await player.play_sting(player.get_stinger_file(id))
+                await player.play_sting(stinger_file)
+            except Exception as ex:
+                print(ex)
+                return
+
+    def get_enter_stinger_file(self, id):
+        enter_dir = os.path.join(dir_path, "stingers", StingerFolderMap[id], "enter")
+        file_path = get_rand_file(enter_dir)
+        return file_path
+
+    def get_exit_stinger_file(self, id):
+        exit_dir = os.path.join(dir_path, "stingers", StingerFolderMap[id], "exit")
+        file_path = get_rand_file(exit_dir)
+        return file_path
+
+    @commands.command(name='sting_test_enter')
+    async def sting_test_enter_(self, ctx):
+        id = NameID(int(ctx.message.content.split(" ")[-1]))
+        if (id in StingerFolderMap.keys()):
+            stinger_file = self.get_enter_stinger_file(id)
+
+            try :
+                    player = StingerPlayer(self.bot, ctx.channel.guild) 
+                    await player.play_sting(stinger_file)
             except:
                 return
 
-    # @commands.command(name='sting_test')
-    # async def sting_test_(self, ctx):
-    #     player = StingerPlayer(ctx)
-    #     await player.play_sting("pp")
+    @commands.command(name='sting_test_exit')
+    async def sting_test_exit_(self, ctx):
+        id = NameID(int(ctx.message.content.split(" ")[-1]))
+        if (id in StingerFolderMap.keys()):
+            stinger_file = self.get_exit_stinger_file(id)
 
-    @commands.command(name='sting_test')
-    async def sting_test_(self, ctx):
-        try :
-            id = NameID(int(ctx.message.content.split(" ")[-1]))
-            if (id in StingerMap.keys()):
-                player = StingerPlayer(self.bot, ctx.channel.guild) 
-                await player.play_sting(player.get_stinger_file(id))
-        except:
-            return
+            try :
+                    player = StingerPlayer(self.bot, ctx.channel.guild) 
+                    await player.play_sting(stinger_file)
+            except:
+                return
 
 class StingerPlayer :
     __slots__ = ('bot', '_guild', '_channel', 'over')
@@ -102,10 +131,6 @@ class StingerPlayer :
         self.bot = bot
         self._guild = guild
         self.over = asyncio.Event()
-
-    def get_stinger_file(self, id):
-         file_path = os.path.join(dir_path, "stingers", StingerMap[id])
-         return file_path
 
     async def play_sting(self, sting_file):
         self.over.clear()

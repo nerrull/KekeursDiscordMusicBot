@@ -11,13 +11,13 @@ class NameID(Enum):
     Gab = 587822829945356310
     Oli = 690719015441793045
 
-StingerMap = {
-    NameID.Etienne : "Etienne.m4a",
-    NameID.Alexis : "Alexis.m4a",
-    NameID.Benne : "Benne.m4a",
-    NameID.Tony : "Tony.m4a",
-    NameID.Math : "Math.m4a",
-    NameID.Gab : "Gab.m4a",
-    NameID.Oli : "Oli.m4a",
-    NameID.Vince : "Vince.m4a",
+StingerFolderMap = {
+    NameID.Etienne : "etienne",
+    NameID.Alexis : "alexis",
+    NameID.Benne : "benne",
+    NameID.Tony : "tony",
+    NameID.Math : "math",
+    NameID.Gab : "gab",
+    NameID.Oli : "oli",
+    NameID.Vince : "vince",
 }
