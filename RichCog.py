@@ -76,11 +76,11 @@ class RichCog(commands.Cog):
         stinger_file = None
         id = NameID(member.id)
         guild= None
-        if before.channel == None and after.channel!= None:
+        if before.channel  != after.channel and after.channel!= None:
             stinger_file = self.get_enter_stinger_file(id)
             guild =after.channel.guild
 
-        elif before.channel != None and after.channel == None :
+        elif before.channel != after.channel:
             stinger_file = self.get_exit_stinger_file(id)
             guild =before.channel.guild
 

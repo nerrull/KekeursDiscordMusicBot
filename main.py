@@ -1,6 +1,6 @@
 import discord
 
-from musicbot import MusicCog
+from musicbot_dlp import MusicCog
 from RichCog import RichCog
 from LussiCog import LussiCog
 from BoissiCog import BoissiCog
@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 from discord.ext import commands
 
 import os
-
 
 load_dotenv()
 
